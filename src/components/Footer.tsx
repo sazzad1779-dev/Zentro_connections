@@ -86,12 +86,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
                 </form>
               )}
             </div>
-
-            {/* Live System Status Indicator */}
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Agency Pods: Accepting Select Q3/Q4 Projects</span>
-            </div>
           </div>
 
           {/* Column 2: Company Navigation (Span 2) */}

@@ -4,7 +4,8 @@ import {
   HelpCircle, 
   Search, 
   ArrowRight,
-  MessageSquare
+  MessageSquare,
+  Activity
 } from 'lucide-react';
 import { FAQ_DATA } from '../data/siteData';
 
@@ -28,19 +29,24 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
   );
 
   return (
-    <section id="faq" className="py-24 bg-[#071A36] text-white relative border-b border-white/10">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="faq" className="py-20 sm:py-24 md:py-28 bg-[#071A36] text-white relative border-b border-white/10 overflow-hidden">
+      {/* Background Lighting */}
+      <div className="absolute top-1/2 left-1/3 w-96 h-96 bg-[#0878FF]/10 rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header */}
-        <div className="text-center mb-14">
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-blue-500/15 border border-blue-500/30 text-xs font-bold uppercase tracking-wider text-[#00B8E6] mb-3 font-mono">
-            GOT QUESTIONS?
+            <Activity className="w-3.5 h-3.5" />
+            <span>TRANSPARENCY & CLARITY</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-['Space_Grotesk']">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-['Space_Grotesk'] leading-tight mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-base text-blue-100/80 mt-2">
-            Everything you need to know about our partnership terms, timelines, and technical deliverables.
+          <p className="text-base sm:text-lg text-blue-100/85 leading-relaxed font-normal">
+            Everything you need to know about our partnership terms, sprint cadences, and technical deliverables.
           </p>
 
           {/* Quick Search Input */}
@@ -63,28 +69,31 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
             return (
               <div
                 key={faq.id}
+                id={`faq-item-${faq.id}`}
                 className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                   isOpen 
-                    ? 'bg-[#0B2854] border-[#00B8E6]/40 shadow-lg' 
-                    : 'bg-[#0B2854]/60 hover:bg-[#0B2854] border-white/10'
+                    ? 'bg-[#0B2854] border-[#00B8E6]/50 shadow-lg' 
+                    : 'bg-[#0B2854]/40 hover:bg-[#0B2854]/70 border-white/10'
                 }`}
               >
                 <button
                   onClick={() => toggleFaq(faq.id)}
                   aria-expanded={isOpen}
-                  className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-base sm:text-lg text-white font-['Space_Grotesk']"
+                  className="w-full px-6 py-5 flex items-center justify-between text-left gap-4 cursor-pointer"
                 >
-                  <span className="leading-snug">{faq.question}</span>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                    isOpen ? 'bg-[#0878FF] text-white rotate-180' : 'bg-white/10 text-slate-300'
+                  <span className="text-sm sm:text-base font-bold font-['Space_Grotesk'] text-white">
+                    {faq.question}
+                  </span>
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                    isOpen ? 'bg-[#00B8E6] text-[#071A36] rotate-180' : 'bg-white/5 text-slate-300'
                   }`}>
                     <ChevronDown className="w-4 h-4" />
                   </div>
                 </button>
 
                 {isOpen && (
-                  <div className="px-6 pb-6 text-xs sm:text-sm text-blue-100/80 leading-relaxed pt-1 border-t border-white/10">
-                    <p>{faq.answer}</p>
+                  <div className="px-6 pb-6 pt-1 text-xs sm:text-sm text-blue-100/80 leading-relaxed border-t border-white/5 font-normal">
+                    {faq.answer}
                   </div>
                 )}
               </div>
@@ -92,37 +101,24 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
           })}
 
           {filteredFaqs.length === 0 && (
-            <div className="text-center py-12 text-blue-200/70 text-sm">
-              No questions found matching "{searchQuery}". Have a specific question?
-              <div className="mt-3">
-                <button
-                  onClick={onOpenContact}
-                  className="text-[#00B8E6] font-bold hover:underline"
-                >
-                  Ask our team directly →
-                </button>
-              </div>
+            <div className="text-center py-12 text-slate-400">
+              No matching questions found. Ask us directly below!
             </div>
           )}
         </div>
 
-        {/* Still have questions prompt */}
-        <div className="mt-12 p-6 rounded-2xl bg-[#0B2854]/80 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left text-white shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 text-[#00B8E6] flex items-center justify-center shadow-xs border border-white/10">
-              <MessageSquare className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="text-xs font-bold text-white font-['Space_Grotesk']">Still have questions?</div>
-              <div className="text-[11px] text-blue-200/70">Our leadership team is available for direct 1-on-1 consultations.</div>
-            </div>
+        {/* Direct Question Callout */}
+        <div className="mt-12 p-6 rounded-2xl bg-white/5 border border-white/10 text-center flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-left">
+            <div className="text-sm font-bold text-white font-['Space_Grotesk']">Have a specific question not covered here?</div>
+            <div className="text-xs text-blue-100/70">Our principals respond directly within 24 hours.</div>
           </div>
-
           <button
             onClick={onOpenContact}
-            className="px-5 py-2.5 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white text-xs font-semibold uppercase tracking-wider shadow-lg shadow-blue-500/25 transition-all shrink-0"
+            className="px-5 py-2.5 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >
-            Ask a Partner
+            <span>Ask a Question</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
 

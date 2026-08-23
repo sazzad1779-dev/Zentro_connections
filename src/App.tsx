@@ -103,18 +103,18 @@ export default function App() {
           onOpenContact={() => handleOpenContact('Partnership Inquiry')}
         />
 
-        {/* 7. Process Section (How We Work) */}
-        <ProcessSection
-          onOpenContact={() => handleOpenContact('Process & Sprint Kickoff')}
-        />
+        {/* 7. Mission & Vision (Guiding Principles & Global Vision) */}
+        <MissionVision />
 
         {/* 8. Team Section (The People Behind Zentro) */}
         <TeamSection
           onOpenContact={() => handleOpenContact('Squad Collaboration')}
         />
 
-        {/* 9. Mission & Vision (Guiding Principles & Global Vision) */}
-        <MissionVision />
+        {/* 9. Process Section (How We Work) */}
+        <ProcessSection
+          onOpenContact={() => handleOpenContact('Process & Sprint Kickoff')}
+        />
 
         {/* 10. Target Clients (Built for Ambitious Businesses) */}
         <TargetClients

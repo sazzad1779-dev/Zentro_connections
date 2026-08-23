@@ -4,9 +4,7 @@ import {
   ArrowRight, 
   Menu, 
   X, 
-  Mail,
-  PhoneCall,
-  Sparkles
+  ChevronDown
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -17,15 +15,27 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
 
-      // Section tracking for active states
-      const sections = ['about', 'services', 'work', 'why-us', 'process', 'team', 'vision-mission', 'clients', 'testimonials', 'faq'];
-      const scrollPos = window.scrollY + 200;
+      // Section tracking for active states across all page anchors
+      const sections = [
+        'about', 
+        'services', 
+        'work', 
+        'why-us', 
+        'vision-mission',
+        'team', 
+        'process', 
+        'clients', 
+        'testimonials', 
+        'faq'
+      ];
+      const scrollPos = window.scrollY + 220;
 
       for (const section of sections) {
         const el = document.getElementById(section);
@@ -44,98 +54,131 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
+  // Primary Visible Navbar Tabs (Vision placed before Team, Process moved to More)
+  const primaryNavLinks = [
     { label: 'About', href: '#about', id: 'about' },
     { label: 'Capabilities', href: '#services', id: 'services' },
     { label: 'Work', href: '#work', id: 'work' },
     { label: 'Why Zentro', href: '#why-us', id: 'why-us' },
-    { label: 'Process', href: '#process', id: 'process' },
+    { label: 'Vision', href: '#vision-mission', id: 'vision-mission' },
     { label: 'Team', href: '#team', id: 'team' },
-    { label: 'FAQ', href: '#faq', id: 'faq' },
   ];
+
+  // Missing sections curated neatly inside "More"
+  const moreNavLinks = [
+    { label: 'Process', href: '#process', id: 'process', desc: 'Sprint methodology & milestones' },
+    { label: 'Client Models', href: '#clients', id: 'clients', desc: 'Custom enterprise & startup squads' },
+    { label: 'Testimonials', href: '#testimonials', id: 'testimonials', desc: 'Executive client reviews' },
+    { label: 'FAQ', href: '#faq', id: 'faq', desc: 'Terms, sprints & delivery answers' },
+  ];
+
+  const isMoreActive = moreNavLinks.some(sec => sec.id === activeSection);
 
   return (
     <header 
       id="main-navigation-header"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-[#071A36]/92 backdrop-blur-md shadow-lg border-b border-white/10 py-3' 
-          : 'bg-transparent py-4 sm:py-5'
+          ? 'bg-[#071A36]/95 backdrop-blur-md shadow-lg border-b border-white/10 py-3.5' 
+          : 'bg-transparent py-5 sm:py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-4 lg:gap-6">
           
-          {/* Logo */}
+          {/* 1. Left: Brand Logo */}
           <div className="shrink-0">
             <Logo variant="light" size="md" />
           </div>
 
-          {/* Desktop Navigation Links (No dropdown on Capabilities) */}
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={link.href}
-                id={`nav-link-${link.id}`}
-                className={`px-3 py-1.5 xl:px-3.5 xl:py-2 text-[13px] xl:text-[14px] font-medium rounded-lg transition-colors ${
-                  activeSection === link.id
-                    ? 'text-[#00B8E6] font-semibold bg-white/10'
+          {/* 2. Center: Primary Navbar Links + "More" Dropdown for Missing Sections */}
+          <nav className="hidden md:flex items-center gap-1 xl:gap-1.5">
+            {primaryNavLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.id}
+                  href={link.href}
+                  id={`nav-link-${link.id}`}
+                  className={`px-3 py-2 xl:px-3.5 xl:py-2 text-xs lg:text-[13px] font-semibold tracking-wide rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'text-[#00B8E6] bg-white/10 shadow-xs'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
+
+            {/* "More" Dropdown (Containing Process, Client Models, Testimonials, FAQ) */}
+            <div className="relative">
+              <button
+                onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+                onBlur={() => setTimeout(() => setMoreMenuOpen(false), 200)}
+                id="nav-more-menu-btn"
+                aria-expanded={moreMenuOpen}
+                className={`flex items-center gap-1.5 px-3 py-2 xl:px-3.5 xl:py-2 text-xs lg:text-[13px] font-semibold rounded-xl transition-all duration-200 cursor-pointer ${
+                  isMoreActive || moreMenuOpen 
+                    ? 'bg-white/10 text-[#00B8E6]' 
                     : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
-                {link.label}
-              </a>
-            ))}
+                <span>More</span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${moreMenuOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {moreMenuOpen && (
+                <div className="absolute top-full right-0 lg:left-0 lg:right-auto mt-2 w-64 bg-[#0B2854] border border-white/15 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150">
+                  <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00B8E6] px-3 py-1.5 border-b border-white/10 mb-1">
+                    Additional Sections
+                  </div>
+                  <div className="space-y-1">
+                    {moreNavLinks.map((sec) => (
+                      <a
+                        key={sec.id}
+                        href={sec.href}
+                        onClick={() => setMoreMenuOpen(false)}
+                        className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-colors ${
+                          activeSection === sec.id
+                            ? 'bg-[#0878FF]/20 text-[#00B8E6] font-bold'
+                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                        }`}
+                      >
+                        <div>
+                          <div className="font-semibold text-white">{sec.label}</div>
+                          <div className="text-[10px] text-blue-200/60 font-normal">{sec.desc}</div>
+                        </div>
+                        {activeSection === sec.id && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00B8E6]" />
+                        )}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
-          {/* Right Action & Agency Info Area */}
-          <div className="hidden sm:flex items-center gap-3 xl:gap-4 shrink-0">
-            {/* Direct Contact / Availability Info */}
-            <div className="hidden md:flex items-center gap-3 pr-3 border-r border-white/10 text-xs">
-              <a 
-                href="mailto:hello@zentrocomms.com"
-                className="flex items-center gap-1.5 text-blue-200/80 hover:text-white transition-colors"
-                title="Direct Agency Email"
-              >
-                <Mail className="w-3.5 h-3.5 text-[#00B8E6]" />
-                <span className="font-mono text-[11px] xl:text-xs">hello@zentrocomms.com</span>
-              </a>
-
-              <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Q3 Sprints Open</span>
-              </div>
-            </div>
-
-            {/* Direct Call Link */}
-            <a 
-              href="tel:+18005559368" 
-              className="hidden 2xl:flex items-center gap-1.5 text-xs font-medium text-slate-300 hover:text-white px-2 py-1.5"
-              title="Direct Inquiries"
-            >
-              <PhoneCall className="w-3.5 h-3.5 text-[#00B8E6]" />
-              <span className="font-mono text-xs">+1 (800) ZENTRO-9</span>
-            </a>
-
-            {/* Main CTA */}
+          {/* 3. Right: Clean High-Impact CTA Button */}
+          <div className="hidden sm:flex items-center gap-3 shrink-0">
             <button
               onClick={() => onOpenContact()}
               id="header-start-project-btn"
-              className="inline-flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white shadow-md shadow-blue-500/20 transition-all duration-200 active:scale-95 group cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white shadow-lg shadow-blue-500/25 transition-all duration-200 active:scale-95 group cursor-pointer"
             >
               <span>Start a Project</span>
               <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
             </button>
           </div>
 
-          {/* Mobile Hamburger Button */}
-          <div className="flex lg:hidden items-center gap-2">
+          {/* Mobile Navigation Trigger */}
+          <div className="flex md:hidden items-center gap-2">
             <button
               onClick={() => onOpenContact()}
-              className="sm:hidden px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#0878FF] text-white"
+              className="sm:hidden px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#0878FF] text-white"
             >
-              Let's Talk
+              Start Project
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -150,37 +193,60 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div 
           id="mobile-nav-drawer"
-          className="lg:hidden fixed inset-x-0 top-full bg-[#0B2854]/98 backdrop-blur-lg border-b border-blue-800/60 shadow-2xl p-6 transition-all duration-300 max-h-[85vh] overflow-y-auto text-white"
+          className="md:hidden fixed inset-x-0 top-full bg-[#0B2854]/98 backdrop-blur-xl border-b border-blue-800/60 shadow-2xl p-6 transition-all duration-300 max-h-[80vh] overflow-y-auto text-white"
         >
-          <div className="flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-3 rounded-xl text-base font-semibold flex items-center justify-between ${
-                  activeSection === link.id ? 'bg-blue-500/20 text-[#00B8E6]' : 'text-slate-200 hover:bg-white/5'
-                }`}
-              >
-                <span>{link.label}</span>
-                <ArrowRight className="w-4 h-4 text-slate-400" />
-              </a>
-            ))}
-
-            {/* Mobile Contact Info */}
-            <div className="pt-4 mt-2 border-t border-white/10 flex flex-col gap-3">
-              <div className="flex items-center justify-between text-xs text-blue-200/80 py-1 font-mono">
-                <a href="mailto:hello@zentrocomms.com" className="flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-[#00B8E6]" />
-                  <span>hello@zentrocomms.com</span>
-                </a>
-                <span className="text-emerald-400">● Open for Sprints</span>
+          <div className="space-y-4">
+            
+            {/* Primary Links */}
+            <div>
+              <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00B8E6] mb-2 px-2">
+                Main Pillars
               </div>
+              <div className="space-y-1">
+                {primaryNavLinks.map((link) => (
+                  <a
+                    key={link.id}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
+                      activeSection === link.id ? 'bg-blue-500/20 text-[#00B8E6]' : 'text-slate-200 hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{link.label}</span>
+                    <ArrowRight className="w-4 h-4 text-slate-400" />
+                  </a>
+                ))}
+              </div>
+            </div>
 
+            {/* Missing Sections under More */}
+            <div className="pt-2 border-t border-white/10">
+              <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00B8E6] mb-2 px-2">
+                More Sections
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {moreNavLinks.map((sec) => (
+                  <a
+                    key={sec.id}
+                    href={sec.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`p-2.5 rounded-xl text-xs font-semibold flex flex-col gap-0.5 ${
+                      activeSection === sec.id ? 'bg-blue-500/20 text-[#00B8E6]' : 'bg-white/5 hover:bg-white/10 text-slate-200'
+                    }`}
+                  >
+                    <span>{sec.label}</span>
+                    <span className="text-[10px] text-blue-200/50 font-normal">{sec.desc.split('&')[0]}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            {/* Action */}
+            <div className="pt-3 border-t border-white/10">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -192,6 +258,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>
+
           </div>
         </div>
       )}
