@@ -148,8 +148,8 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
                 </a>
               </li>
               <li>
-                <a href="#estimator" className="text-[#00B8E6] hover:text-white font-semibold transition-colors flex items-center gap-1 font-mono">
-                  Scope & Cost Calculator →
+                <a href="#clients" className="hover:text-[#00B8E6] transition-colors">
+                  Client Engagement Models
                 </a>
               </li>
             </ul>

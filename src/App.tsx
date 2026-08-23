@@ -16,14 +16,15 @@ import { TeamSection } from './components/TeamSection';
 import { MissionVision } from './components/MissionVision';
 import { TargetClients } from './components/TargetClients';
 import { TestimonialsSection } from './components/TestimonialsSection';
-import { ProjectEstimator } from './components/ProjectEstimator';
 import { FaqSection } from './components/FaqSection';
 import { CtaSection } from './components/CtaSection';
 import { Footer } from './components/Footer';
 import { ContactModal } from './components/ContactModal';
 import { ServiceDetailModal } from './components/ServiceDetailModal';
 import { CaseStudyModal } from './components/CaseStudyModal';
+import { ScrollExperience } from './components/ScrollExperience';
 import { ServiceItem, ProjectItem } from './types';
+import { SERVICES_DATA } from './data/siteData';
 
 export default function App() {
   // Modal states
@@ -42,15 +43,15 @@ export default function App() {
     setContactModalOpen(true);
   };
 
-  const handleEstimatorInquiry = (details: {
-    projectType: string;
-    timeline: string;
-    estimatedBudget: string;
-  }) => {
-    setContactServicePrefill(details.projectType);
-    setContactBudgetPrefill(details.estimatedBudget);
-    setContactTimelinePrefill(details.timeline);
-    setContactModalOpen(true);
+  const handleSelectServiceByName = (serviceName: string) => {
+    const cleanQuery = serviceName.toLowerCase();
+    const matched = SERVICES_DATA.find(s => 
+      s.title.toLowerCase().includes(cleanQuery) || 
+      cleanQuery.includes(s.category.toLowerCase()) ||
+      cleanQuery.includes(s.title.toLowerCase())
+    ) || SERVICES_DATA[0];
+    
+    setSelectedService(matched);
   };
 
   const handleExploreWork = () => {
@@ -72,8 +73,9 @@ export default function App() {
       <main className="flex-1">
         {/* 1. Hero */}
         <Hero
-          onOpenContact={() => handleOpenContact()}
+          onOpenContact={(svcName) => handleOpenContact(svcName)}
           onExploreWork={handleExploreWork}
+          onSelectService={handleSelectServiceByName}
         />
 
         {/* 2. Trust & Social Proof Bar */}
@@ -84,7 +86,7 @@ export default function App() {
           onOpenContact={() => handleOpenContact('General Agency Inquiry')}
         />
 
-        {/* 4. Services Section (What We Do) */}
+        {/* 4. Services Section (Capabilities) */}
         <ServicesSection
           onOpenContact={(svcName) => handleOpenContact(svcName)}
           onSelectService={(svc) => setSelectedService(svc)}
@@ -96,7 +98,7 @@ export default function App() {
           onOpenContact={() => handleOpenContact('Portfolio Case Study Inquiry')}
         />
 
-        {/* 6. Why Zentro (5 Core Principles & Comparison) */}
+        {/* 6. Why Zentro (Core Principles & Comparison) */}
         <WhyZentro
           onOpenContact={() => handleOpenContact('Partnership Inquiry')}
         />
@@ -111,7 +113,7 @@ export default function App() {
           onOpenContact={() => handleOpenContact('Squad Collaboration')}
         />
 
-        {/* 9. Mission & Vision */}
+        {/* 9. Mission & Vision (Guiding Principles & Global Vision) */}
         <MissionVision />
 
         {/* 10. Target Clients (Built for Ambitious Businesses) */}
@@ -119,26 +121,21 @@ export default function App() {
           onOpenContact={(sector) => handleOpenContact(sector)}
         />
 
-        {/* 11. Client Testimonials */}
+        {/* 11. Client Testimonials (Trusted by Leaders Who Value Craft) */}
         <TestimonialsSection />
 
-        {/* 12. Interactive Project Scope & Cost Estimator */}
-        <ProjectEstimator
-          onStartInquiry={handleEstimatorInquiry}
-        />
-
-        {/* 13. FAQ Accordion */}
+        {/* 12. FAQ Accordion */}
         <FaqSection
           onOpenContact={() => handleOpenContact('General Inquiry / Question')}
         />
 
-        {/* 14. Final High-Impact CTA Section */}
+        {/* 13. Final High-Impact CTA Section */}
         <CtaSection
           onOpenContact={() => handleOpenContact('Start a Conversation')}
         />
       </main>
 
-      {/* 15. Comprehensive Footer */}
+      {/* 14. Comprehensive Footer */}
       <Footer
         onOpenContact={(topic) => handleOpenContact(topic)}
         onSelectService={(svc) => setSelectedService(svc)}
@@ -164,6 +161,9 @@ export default function App() {
         onClose={() => setSelectedProject(null)}
         onOpenContact={(projTitle) => handleOpenContact(projTitle)}
       />
+
+      {/* Cyber Scroll Progress & Interactive HUD */}
+      <ScrollExperience />
     </div>
   );
 }
