@@ -25,8 +25,11 @@ import { CaseStudyModal } from './components/CaseStudyModal';
 import { ScrollExperience } from './components/ScrollExperience';
 import { ServiceItem, ProjectItem } from './types';
 import { SERVICES_DATA } from './data/siteData';
+import { useTheme } from './context/ThemeContext';
 
 export default function App() {
+  const { isDay } = useTheme();
+
   // Modal states
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [contactServicePrefill, setContactServicePrefill] = useState('');
@@ -62,7 +65,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#071A36] text-white selection:bg-[#0878FF] selection:text-white flex flex-col">
+    <div className={`min-h-screen ${isDay ? 'bg-[#F8FAFC] text-slate-900' : 'bg-[#071A36] text-white'} selection:bg-[#0878FF] selection:text-white flex flex-col transition-colors duration-300`}>
       {/* Sticky Navigation */}
       <Navbar
         onOpenContact={handleOpenContact}

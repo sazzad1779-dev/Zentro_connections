@@ -4,8 +4,11 @@ import {
   ArrowRight, 
   Menu, 
   X, 
-  ChevronDown
+  ChevronDown,
+  Sun,
+  Moon
 } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface NavbarProps {
   onOpenContact: (prefilledService?: string) => void;
@@ -13,6 +16,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
+  const { theme, isDay, toggleTheme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
@@ -79,16 +83,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       id="main-navigation-header"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled 
-          ? 'bg-[#071A36]/95 backdrop-blur-md shadow-lg border-b border-white/10 py-3.5' 
+          ? isDay
+            ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200/80 py-3.5'
+            : 'bg-[#071A36]/95 backdrop-blur-md shadow-lg border-b border-white/10 py-3.5' 
           : 'bg-transparent py-5 sm:py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4 lg:gap-6">
+        <div className="flex items-center justify-between gap-3 lg:gap-6">
           
           {/* 1. Left: Brand Logo */}
           <div className="shrink-0">
-            <Logo variant="light" size="md" />
+            <Logo variant={isDay ? 'dark' : 'light'} size="md" />
           </div>
 
           {/* 2. Center: Primary Navbar Links + "More" Dropdown for Missing Sections */}
@@ -102,8 +108,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   id={`nav-link-${link.id}`}
                   className={`px-3 py-2 xl:px-3.5 xl:py-2 text-xs lg:text-[13px] font-semibold tracking-wide rounded-xl transition-all duration-200 ${
                     isActive
-                      ? 'text-[#00B8E6] bg-white/10 shadow-xs'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                      ? isDay
+                        ? 'text-[#0878FF] bg-blue-50 font-bold shadow-xs'
+                        : 'text-[#00B8E6] bg-white/10 shadow-xs'
+                      : isDay
+                        ? 'text-slate-600 hover:text-slate-950 hover:bg-slate-100'
+                        : 'text-slate-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {link.label}
@@ -120,8 +130,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                 aria-expanded={moreMenuOpen}
                 className={`flex items-center gap-1.5 px-3 py-2 xl:px-3.5 xl:py-2 text-xs lg:text-[13px] font-semibold rounded-xl transition-all duration-200 cursor-pointer ${
                   isMoreActive || moreMenuOpen 
-                    ? 'bg-white/10 text-[#00B8E6]' 
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? isDay
+                      ? 'bg-blue-50 text-[#0878FF] font-bold'
+                      : 'bg-white/10 text-[#00B8E6]' 
+                    : isDay
+                      ? 'text-slate-600 hover:text-slate-950 hover:bg-slate-100'
+                      : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
                 <span>More</span>
@@ -129,8 +143,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
               </button>
 
               {moreMenuOpen && (
-                <div className="absolute top-full right-0 lg:left-0 lg:right-auto mt-2 w-64 bg-[#0B2854] border border-white/15 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150">
-                  <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00B8E6] px-3 py-1.5 border-b border-white/10 mb-1">
+                <div className={`absolute top-full right-0 lg:left-0 lg:right-auto mt-2 w-64 rounded-2xl shadow-2xl p-2 z-50 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-150 ${
+                  isDay
+                    ? 'bg-white border border-slate-200'
+                    : 'bg-[#0B2854] border border-white/15'
+                }`}>
+                  <div className={`text-[10px] font-mono font-bold uppercase tracking-wider px-3 py-1.5 border-b mb-1 ${
+                    isDay
+                      ? 'text-[#0878FF] border-slate-100'
+                      : 'text-[#00B8E6] border-white/10'
+                  }`}>
                     Additional Sections
                   </div>
                   <div className="space-y-1">
@@ -141,16 +163,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                         onClick={() => setMoreMenuOpen(false)}
                         className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-colors ${
                           activeSection === sec.id
-                            ? 'bg-[#0878FF]/20 text-[#00B8E6] font-bold'
-                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                            ? isDay
+                              ? 'bg-blue-50 text-[#0878FF] font-bold'
+                              : 'bg-[#0878FF]/20 text-[#00B8E6] font-bold'
+                            : isDay
+                              ? 'text-slate-700 hover:bg-slate-100 hover:text-slate-950'
+                              : 'text-slate-300 hover:bg-white/5 hover:text-white'
                         }`}
                       >
                         <div>
-                          <div className="font-semibold text-white">{sec.label}</div>
-                          <div className="text-[10px] text-blue-200/60 font-normal">{sec.desc}</div>
+                          <div className={`font-semibold ${isDay ? 'text-slate-900' : 'text-white'}`}>{sec.label}</div>
+                          <div className={`text-[10px] font-normal ${isDay ? 'text-slate-500' : 'text-blue-200/60'}`}>{sec.desc}</div>
                         </div>
                         {activeSection === sec.id && (
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#00B8E6]" />
+                          <span className={`w-1.5 h-1.5 rounded-full ${isDay ? 'bg-[#0878FF]' : 'bg-[#00B8E6]'}`} />
                         )}
                       </a>
                     ))}
@@ -160,31 +186,60 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             </div>
           </nav>
 
-          {/* 3. Right: Clean High-Impact CTA Button */}
-          <div className="hidden sm:flex items-center gap-3 shrink-0">
+          {/* 3. Right: Single-Button Theme Toggle */}
+          <div className="hidden sm:flex items-center gap-2.5 lg:gap-3 shrink-0">
+            
+            {/* Single Theme Toggle Button (On/Off Night Mode) */}
             <button
-              onClick={() => onOpenContact()}
-              id="header-start-project-btn"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white shadow-lg shadow-blue-500/25 transition-all duration-200 active:scale-95 group cursor-pointer"
+              type="button"
+              onClick={toggleTheme}
+              id="theme-mode-toggle-btn"
+              aria-label={isDay ? "Switch to Night Mode" : "Switch to Day Mode"}
+              title={isDay ? "Switch to Night Mode" : "Switch to Day Mode"}
+              className={`p-2.5 rounded-xl border transition-all duration-200 flex items-center justify-center cursor-pointer shadow-xs active:scale-95 group ${
+                isDay
+                  ? 'bg-slate-100 hover:bg-slate-200 border-slate-200/90 text-slate-700 hover:text-slate-950'
+                  : 'bg-white/10 hover:bg-white/15 border-white/15 text-blue-200 hover:text-white'
+              }`}
             >
-              <span>Start a Project</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+              {isDay ? (
+                <Moon className="w-4 h-4 text-slate-700 group-hover:text-[#0878FF] transition-colors" />
+              ) : (
+                <Sun className="w-4 h-4 text-amber-400 fill-amber-400/20 group-hover:text-amber-300 transition-colors" />
+              )}
             </button>
           </div>
 
-          {/* Mobile Navigation Trigger */}
+          {/* Mobile Navigation & Theme Trigger */}
           <div className="flex md:hidden items-center gap-2">
+            {/* Quick Mobile Theme Switch */}
+            <button
+              onClick={() => setTheme(isDay ? 'night' : 'day')}
+              className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+                isDay
+                  ? 'bg-slate-100 border-slate-200 text-slate-700'
+                  : 'bg-white/10 border-white/15 text-slate-200'
+              }`}
+              aria-label="Toggle day and night theme"
+            >
+              {isDay ? <Moon className="w-4 h-4 text-blue-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
+            </button>
+
             <button
               onClick={() => onOpenContact()}
-              className="sm:hidden px-3.5 py-1.5 rounded-lg text-xs font-bold bg-[#0878FF] text-white"
+              className="sm:hidden px-3 py-1.5 rounded-lg text-xs font-bold bg-[#0878FF] text-white"
             >
-              Start Project
+              Start
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               id="mobile-nav-toggle-btn"
               aria-label="Toggle navigation menu"
-              className="p-2 rounded-xl text-white hover:bg-white/10 transition-colors cursor-pointer"
+              className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                isDay
+                  ? 'text-slate-800 hover:bg-slate-100'
+                  : 'text-white hover:bg-white/10'
+              }`}
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -197,13 +252,49 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       {mobileMenuOpen && (
         <div 
           id="mobile-nav-drawer"
-          className="md:hidden fixed inset-x-0 top-full bg-[#0B2854]/98 backdrop-blur-xl border-b border-blue-800/60 shadow-2xl p-6 transition-all duration-300 max-h-[80vh] overflow-y-auto text-white"
+          className={`md:hidden fixed inset-x-0 top-full backdrop-blur-xl border-b shadow-2xl p-6 transition-all duration-300 max-h-[80vh] overflow-y-auto ${
+            isDay
+              ? 'bg-white/98 text-slate-900 border-slate-200'
+              : 'bg-[#0B2854]/98 text-white border-blue-800/60'
+          }`}
         >
           <div className="space-y-4">
             
+            {/* Single Theme Toggle inside Mobile Menu */}
+            <div className={`p-3 rounded-2xl border flex items-center justify-between ${
+              isDay ? 'bg-slate-50 border-slate-200' : 'bg-white/5 border-white/10'
+            }`}>
+              <span className="text-xs font-bold uppercase tracking-wider font-mono">
+                {isDay ? 'Day Mode Active' : 'Night Mode Active'}
+              </span>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 border transition-all cursor-pointer ${
+                  isDay 
+                    ? 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-800' 
+                    : 'bg-white/10 hover:bg-white/15 border-white/15 text-white'
+                }`}
+              >
+                {isDay ? (
+                  <>
+                    <Moon className="w-3.5 h-3.5 text-[#0878FF]" />
+                    <span>Switch to Night</span>
+                  </>
+                ) : (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Switch to Day</span>
+                  </>
+                )}
+              </button>
+            </div>
+
             {/* Primary Links */}
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00B8E6] mb-2 px-2">
+              <div className={`text-[10px] font-mono font-bold uppercase tracking-wider mb-2 px-2 ${
+                isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'
+              }`}>
                 Main Pillars
               </div>
               <div className="space-y-1">
@@ -213,7 +304,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-between ${
-                      activeSection === link.id ? 'bg-blue-500/20 text-[#00B8E6]' : 'text-slate-200 hover:bg-white/5'
+                      activeSection === link.id 
+                        ? isDay
+                          ? 'bg-blue-50 text-[#0878FF] font-bold'
+                          : 'bg-blue-500/20 text-[#00B8E6]' 
+                        : isDay
+                          ? 'text-slate-700 hover:bg-slate-100'
+                          : 'text-slate-200 hover:bg-white/5'
                     }`}
                   >
                     <span>{link.label}</span>
@@ -224,8 +321,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             </div>
 
             {/* Missing Sections under More */}
-            <div className="pt-2 border-t border-white/10">
-              <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#00B8E6] mb-2 px-2">
+            <div className={`pt-2 border-t ${isDay ? 'border-slate-200' : 'border-white/10'}`}>
+              <div className={`text-[10px] font-mono font-bold uppercase tracking-wider mb-2 px-2 ${
+                isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'
+              }`}>
                 More Sections
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -235,28 +334,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     href={sec.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`p-2.5 rounded-xl text-xs font-semibold flex flex-col gap-0.5 ${
-                      activeSection === sec.id ? 'bg-blue-500/20 text-[#00B8E6]' : 'bg-white/5 hover:bg-white/10 text-slate-200'
+                      activeSection === sec.id 
+                        ? isDay
+                          ? 'bg-blue-50 text-[#0878FF] font-bold'
+                          : 'bg-blue-500/20 text-[#00B8E6]' 
+                        : isDay
+                          ? 'bg-slate-100 hover:bg-slate-200/70 text-slate-800'
+                          : 'bg-white/5 hover:bg-white/10 text-slate-200'
                     }`}
                   >
                     <span>{sec.label}</span>
-                    <span className="text-[10px] text-blue-200/50 font-normal">{sec.desc.split('&')[0]}</span>
+                    <span className={`text-[10px] font-normal ${isDay ? 'text-slate-500' : 'text-blue-200/50'}`}>{sec.desc.split('&')[0]}</span>
                   </a>
                 ))}
               </div>
-            </div>
-
-            {/* Action */}
-            <div className="pt-3 border-t border-white/10">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenContact();
-                }}
-                className="w-full py-3.5 px-6 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white font-bold text-xs uppercase tracking-wider text-center flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20 cursor-pointer"
-              >
-                <span>Start a Project</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
 
           </div>

@@ -6,14 +6,13 @@ import {
   Twitter, 
   Github, 
   Instagram, 
-  Globe2, 
   Mail, 
   Phone, 
   MapPin, 
-  CheckCircle2,
-  Activity
+  CheckCircle2
 } from 'lucide-react';
 import { ServiceItem } from '../types';
+import { useTheme } from '../context/ThemeContext';
 
 interface FooterProps {
   onOpenContact: (serviceName?: string) => void;
@@ -21,6 +20,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }) => {
+  const { isDay } = useTheme();
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
@@ -34,8 +34,14 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
   };
 
   return (
-    <footer id="footer" className="bg-[#071A36] text-white border-t border-white/10 pt-20 pb-12 relative overflow-hidden">
-      
+    <footer 
+      id="footer" 
+      className={`pt-20 pb-12 relative overflow-hidden transition-colors duration-300 ${
+        isDay 
+          ? 'bg-slate-900 text-white border-t border-slate-800' 
+          : 'bg-[#071A36] text-white border-t border-white/10'
+      }`}
+    >
       {/* Background glow */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-[#0878FF]/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -74,12 +80,12 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
                     placeholder="Enter your work email..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#0B2854] border border-white/10 text-xs text-white placeholder:text-blue-200/40 focus:outline-none focus:border-[#00B8E6] transition-colors"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 text-xs text-white placeholder:text-blue-200/40 focus:outline-none focus:border-[#00B8E6] transition-colors"
                   />
                   <button
                     type="submit"
                     aria-label="Subscribe to newsletter"
-                    className="px-4 py-2.5 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white font-bold text-xs transition-colors shrink-0 shadow-md shadow-blue-500/20"
+                    className="px-4 py-2.5 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white font-bold text-xs transition-colors shrink-0 shadow-md shadow-blue-500/20 cursor-pointer"
                   >
                     <ArrowRight className="w-4 h-4" />
                   </button>
@@ -97,10 +103,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
               <li><a href="#about" className="hover:text-[#00B8E6] transition-colors">About Zentro</a></li>
               <li><a href="#work" className="hover:text-[#00B8E6] transition-colors">Selected Work</a></li>
               <li><a href="#why-us" className="hover:text-[#00B8E6] transition-colors">Why Zentro</a></li>
-              <li><a href="#process" className="hover:text-[#00B8E6] transition-colors">How We Work</a></li>
-              <li><a href="#team" className="hover:text-[#00B8E6] transition-colors">Leadership & Squad</a></li>
               <li><a href="#vision-mission" className="hover:text-[#00B8E6] transition-colors">Vision & Mission</a></li>
-              <li><a href="#testimonials" className="hover:text-[#00B8E6] transition-colors">Client Endorsements</a></li>
+              <li><a href="#team" className="hover:text-[#00B8E6] transition-colors">Leadership & Squad</a></li>
+              <li><a href="#process" className="hover:text-[#00B8E6] transition-colors">How We Work</a></li>
+              <li><a href="#clients" className="hover:text-[#00B8E6] transition-colors">Client Models</a></li>
+              <li><a href="#testimonials" className="hover:text-[#00B8E6] transition-colors">Testimonials</a></li>
               <li><a href="#faq" className="hover:text-[#00B8E6] transition-colors">FAQ</a></li>
             </ul>
           </div>
@@ -139,11 +146,6 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
               <li>
                 <a href="#services" className="hover:text-[#00B8E6] transition-colors">
                   Strategic Communications & PR
-                </a>
-              </li>
-              <li>
-                <a href="#clients" className="hover:text-[#00B8E6] transition-colors">
-                  Client Engagement Models
                 </a>
               </li>
             </ul>
@@ -239,13 +241,13 @@ export const Footer: React.FC<FooterProps> = ({ onOpenContact, onSelectService }
           </div>
 
           <div className="flex items-center gap-6">
-            <button onClick={() => onOpenContact('Privacy Policy Inquiry')} className="hover:text-white transition-colors">
+            <button onClick={() => onOpenContact('Privacy Policy Inquiry')} className="hover:text-white transition-colors cursor-pointer">
               Privacy Policy
             </button>
-            <button onClick={() => onOpenContact('Terms of Service Inquiry')} className="hover:text-white transition-colors">
+            <button onClick={() => onOpenContact('Terms of Service Inquiry')} className="hover:text-white transition-colors cursor-pointer">
               Terms & Conditions
             </button>
-            <button onClick={() => onOpenContact('Security Assurance')} className="hover:text-white transition-colors">
+            <button onClick={() => onOpenContact('Security Assurance')} className="hover:text-white transition-colors cursor-pointer">
               Security & Compliance
             </button>
           </div>

@@ -1,20 +1,36 @@
 import React from 'react';
 import { ArrowRight, Sparkles, Phone, Mail, MapPin, ShieldCheck, Clock } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 interface CtaSectionProps {
   onOpenContact: () => void;
 }
 
 export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact }) => {
+  const { isDay } = useTheme();
+
   return (
-    <section id="contact" className="py-24 bg-[#071A36] text-white relative overflow-hidden border-b border-white/10">
+    <section 
+      id="contact" 
+      className={`py-24 relative overflow-hidden border-b transition-colors duration-300 ${
+        isDay ? 'bg-slate-50 border-slate-200/80' : 'bg-[#071A36] text-white border-white/10'
+      }`}
+    >
       {/* Background visual graphics */}
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#0878FF]/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-[#00B8E6]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className={`absolute top-0 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
+        isDay ? 'bg-blue-200/40' : 'bg-[#0878FF]/20'
+      }`} />
+      <div className={`absolute bottom-0 left-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
+        isDay ? 'bg-cyan-200/40' : 'bg-[#00B8E6]/20'
+      }`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="bg-gradient-to-br from-[#0B2854] to-[#071A36] rounded-3xl p-8 sm:p-16 border border-white/15 shadow-2xl relative overflow-hidden">
+        <div className={`rounded-3xl p-8 sm:p-16 border shadow-2xl relative overflow-hidden text-white ${
+          isDay
+            ? 'bg-gradient-to-br from-[#0B2854] to-[#071A36] border-blue-900 shadow-blue-900/10'
+            : 'bg-gradient-to-br from-[#0B2854] to-[#071A36] border-white/15'
+        }`}>
           
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -40,7 +56,7 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact }) => {
                 <button
                   onClick={onOpenContact}
                   id="final-cta-start-project-btn"
-                  className="px-8 py-4 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white font-bold text-sm uppercase tracking-wider shadow-lg shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-3 group"
+                  className="px-8 py-4 rounded-xl bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white font-bold text-sm uppercase tracking-wider shadow-lg shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-3 group cursor-pointer"
                 >
                   <span>Start a Conversation</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
