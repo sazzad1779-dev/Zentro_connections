@@ -186,33 +186,6 @@ export const TeamSection: React.FC<TeamSectionProps> = ({ onOpenContact }) => {
           ))}
         </div>
 
-        {/* Squad collaboration callout */}
-        <div className={`mt-12 p-6 sm:p-8 rounded-2xl sm:rounded-3xl text-center max-w-2xl mx-auto space-y-3 shadow-xl backdrop-blur-xs border transition-colors ${
-          isDay
-            ? 'bg-white border-slate-200 text-slate-900'
-            : 'bg-[#0B2854]/60 border-white/10 text-white'
-        }`}>
-          <h4 className={`text-lg sm:text-xl font-bold font-['Space_Grotesk'] ${
-            isDay ? 'text-slate-900' : 'text-white'
-          }`}>
-            Want to work with our creative technology squad?
-          </h4>
-          <p className={`text-xs sm:text-sm ${
-            isDay ? 'text-slate-600' : 'text-blue-100/80'
-          }`}>
-            We are always scouting for senior product designers, creative technologists, 3D animators, and growth strategists worldwide.
-          </p>
-          <div className="pt-2">
-            <button
-              onClick={onOpenContact}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white shadow-lg shadow-blue-500/25 transition-all cursor-pointer"
-            >
-              <span>Explore Roles & Squad Inquiries</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-
       </div>
     </section>
   );

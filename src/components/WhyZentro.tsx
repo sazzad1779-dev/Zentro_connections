@@ -184,25 +184,6 @@ export const WhyZentro: React.FC<WhyZentroProps> = ({ onOpenContact }) => {
                 {principles[activePrinciple].description}
               </p>
             </div>
-
-            <div className={`pt-8 mt-8 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10 ${
-              isDay ? 'border-slate-200' : 'border-white/10'
-            }`}>
-              <div className={`flex items-center gap-2 text-xs font-semibold ${
-                isDay ? 'text-slate-700' : 'text-blue-200/80'
-              }`}>
-                <Shield className={`w-4 h-4 shrink-0 ${isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'}`} />
-                <span>Zero Compromises on Speed, Security, or Brand Craft</span>
-              </div>
-
-              <button
-                onClick={onOpenContact}
-                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white shadow-md shadow-blue-500/20 transition-all cursor-pointer group shrink-0"
-              >
-                <span>Partner With Us</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-              </button>
-            </div>
           </div>
 
         </div>

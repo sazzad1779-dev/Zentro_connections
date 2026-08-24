@@ -269,24 +269,6 @@ export const PortfolioSection: React.FC<PortfolioSectionProps> = ({ onSelectProj
           ))}
         </div>
 
-        {/* Bottom CTA Bar for Portfolio */}
-        <div className="mt-14 text-center">
-          <p className={`text-xs sm:text-sm mb-4 ${isDay ? 'text-slate-600' : 'text-blue-200/70'}`}>
-            Looking for specialized case studies in your specific vertical or industry?
-          </p>
-          <button
-            onClick={onOpenContact}
-            className={`inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-              isDay
-                ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 shadow-2xs'
-                : 'bg-white/10 hover:bg-white/20 text-white border border-white/20 shadow-2xs'
-            }`}
-          >
-            <span>Request Tailored Industry Deck</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
       </div>
     </section>
   );
