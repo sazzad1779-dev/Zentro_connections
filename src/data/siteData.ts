@@ -338,38 +338,38 @@ export const TESTIMONIALS_DATA: TestimonialItem[] = [
 export const PROCESS_STEPS: ProcessStep[] = [
   {
     step: '01',
-    title: 'Discover & Deep Audit',
-    duration: 'Week 1-2',
-    description: 'We immerse ourselves in your business ecosystem, interviewing stakeholders, auditing technical infrastructure, and mapping core customer touchpoints to define crisp strategic objectives.',
-    keyOutputs: ['Strategic Brief & Objectives', 'Competitor Landscape Analysis', 'User Persona & Journey Maps', 'Technical Architecture Audit']
+    title: 'DISCOVERY',
+    duration: 'Step 01',
+    description: 'We listen to your vision and goals',
+    keyOutputs: ['Discovery Workshop', 'Goal Alignment', 'Needs Assessment', 'Project Scope']
   },
   {
     step: '02',
-    title: 'Strategize & Blueprint',
-    duration: 'Week 2-3',
-    description: 'We translate raw insights into a bulletproof roadmap. This includes creative direction moodboards, information architecture, technology stack selection, and growth milestone KPIs.',
-    keyOutputs: ['Creative Direction Concepts', 'Information Architecture', 'Tech Stack Specifications', 'Milestone & Delivery Schedule']
+    title: 'PLANNING',
+    duration: 'Step 02',
+    description: 'We create a custom strategy for you',
+    keyOutputs: ['Strategic Roadmap', 'Information Architecture', 'Resource Allocation', 'Milestone Plan']
   },
   {
     step: '03',
-    title: 'Create & Engineer',
-    duration: 'Week 4-7',
-    description: 'Design and engineering sprint in lockstep. We craft pixel-perfect design systems, high-fidelity prototypes, production-ready codebases, and cinematic visual assets with bi-weekly client demos.',
-    keyOutputs: ['Full UI/UX Interactive Prototypes', 'Production TypeScript Codebase', '3D / Motion Brand Assets', 'Responsive Component Library']
+    title: 'DESIGN',
+    duration: 'Step 03',
+    description: 'We craft stunning visuals & concepts',
+    keyOutputs: ['Visual Concepts', 'UI/UX Prototypes', 'Design System', 'Design Review']
   },
   {
     step: '04',
-    title: 'Hardening & Launch',
-    duration: 'Week 8',
-    description: 'Rigorous cross-device testing, performance optimization, SEO validation, and infrastructure load-testing ensure a flawless debut to your global audience.',
-    keyOutputs: ['End-to-End QA Testing', '99+ Lighthouse Score Tuning', 'DNS & Cloud Deployment', 'Staff Training & Admin Handover']
+    title: 'DEVELOPMENT',
+    duration: 'Step 04',
+    description: 'We bring designs to life',
+    keyOutputs: ['Clean Code Architecture', 'Responsive Frontend', 'Backend Integrations', 'Interactive Features']
   },
   {
     step: '05',
-    title: 'Scale & Continuous Growth',
-    duration: 'Ongoing',
-    description: 'We monitor live performance analytics, conduct A/B conversion tests, and iteratively scale your digital footprint to drive compound business outcomes.',
-    keyOutputs: ['Live Behavioral Analytics', 'Quarterly Growth Sprints', 'Feature Enhancements', 'Ongoing Technical Maintenance']
+    title: 'DELIVERY',
+    duration: 'Step 05',
+    description: 'We launch and support you',
+    keyOutputs: ['QA & Final Polish', 'Live Deployment', 'Admin Onboarding', 'Continuous Support']
   }
 ];
 

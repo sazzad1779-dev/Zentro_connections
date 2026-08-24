@@ -1,418 +1,404 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Search, 
+  Sparkles, 
+  ArrowRight, 
+  ArrowLeft, 
+  Play, 
+  Pause, 
   Compass, 
+  Target, 
+  Palette, 
   Code2, 
   Rocket, 
-  TrendingUp, 
-  ArrowRight, 
-  Check, 
-  ShieldCheck, 
-  Zap, 
-  MessageSquareCode, 
-  Sparkles, 
-  GitBranch, 
-  Terminal, 
-  Activity, 
-  Layers 
+  CheckCircle2
 } from 'lucide-react';
-import { PROCESS_STEPS } from '../data/siteData';
 import { useTheme } from '../context/ThemeContext';
 
 interface ProcessSectionProps {
   onOpenContact: (serviceName?: string) => void;
 }
 
+interface StepItem {
+  number: string;
+  stepName: string;
+  description: string;
+  icon: React.ElementType;
+  tagline: string;
+  deliverables: string[];
+}
+
+const STEPS: StepItem[] = [
+  {
+    number: '01',
+    stepName: 'DISCOVERY',
+    description: 'We listen to your vision and goals',
+    icon: Compass,
+    tagline: 'Deep dive into objectives, audience, and key performance indicators.',
+    deliverables: ['Stakeholder Vision Brief', 'Needs & Goal Alignment', 'Project Scope & Roadmap']
+  },
+  {
+    number: '02',
+    stepName: 'PLANNING',
+    description: 'We create a custom strategy for you',
+    icon: Target,
+    tagline: 'Architecting a strategic framework tailored for execution and scalability.',
+    deliverables: ['Strategic Action Plan', 'Information Architecture', 'Sprint Schedule & Milestones']
+  },
+  {
+    number: '03',
+    stepName: 'DESIGN',
+    description: 'We craft stunning visuals & concepts',
+    icon: Palette,
+    tagline: 'Translating brand identity into engaging, high-fidelity digital experiences.',
+    deliverables: ['Interactive UI/UX Prototypes', 'Design System Tokens', 'Brand Visual Assets']
+  },
+  {
+    number: '04',
+    stepName: 'DEVELOPMENT',
+    description: 'We bring designs to life',
+    icon: Code2,
+    tagline: 'Engineering clean, modern, and performant web applications.',
+    deliverables: ['Production TypeScript Code', 'Responsive Implementations', 'Performance Optimization']
+  },
+  {
+    number: '05',
+    stepName: 'DELIVERY',
+    description: 'We launch and support you',
+    icon: Rocket,
+    tagline: 'Seamless deployment, handoff, and ongoing partnership for continuous growth.',
+    deliverables: ['Zero-Downtime Launch', 'Admin Knowledge Transfer', 'Dedicated Post-Launch Care']
+  }
+];
+
+const STEP_DURATION = 9000; // 9000ms (9 seconds) per tab — 4s slower for comfortable reading
+
 export const ProcessSection: React.FC<ProcessSectionProps> = ({ onOpenContact }) => {
   const { isDay } = useTheme();
-  const [activeStepIndex, setActiveStepIndex] = useState(0);
+  
+  // Active step index: 0, 1, 2, 3, 4 (strictly 5 steps)
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
 
-  const stageMeta = [
-    {
-      icon: Search,
-      phaseTag: 'PHASE 01 // IMMERSION',
-      tools: ['Miro', 'Hotjar', 'Google Analytics', 'Notion'],
-      highlightMetric: '100% Alignment',
-      metricSub: 'On business goals & KPIs'
-    },
-    {
-      icon: Compass,
-      phaseTag: 'PHASE 02 // ARCHITECTURE',
-      tools: ['Figma', 'FigJam', 'Whimsical', 'Linear'],
-      highlightMetric: 'Interactive Wireframes',
-      metricSub: 'Before writing any code'
-    },
-    {
-      icon: Code2,
-      phaseTag: 'PHASE 03 // VELOCITY BUILD',
-      tools: ['React/Next.js', 'Tailwind', 'Node.js', 'GitHub'],
-      highlightMetric: 'Bi-Weekly Demos',
-      metricSub: 'Live staging environments'
-    },
-    {
-      icon: Rocket,
-      phaseTag: 'PHASE 04 // HARDENING',
-      tools: ['Lighthouse', 'Vercel', 'AWS/Cloud', 'Sentry'],
-      highlightMetric: '99+ Lighthouse',
-      metricSub: 'Zero-downtime deployment'
-    },
-    {
-      icon: TrendingUp,
-      phaseTag: 'PHASE 05 // COMPOUND GROWTH',
-      tools: ['Mixpanel', 'PostHog', 'Segment', 'Datadog'],
-      highlightMetric: 'Continuous CRO',
-      metricSub: 'Iterative sprint releases'
-    }
-  ];
+  const handleNext = () => {
+    setDirection(1);
+    setCurrentStepIndex((prev) => (prev + 1) % STEPS.length);
+  };
 
-  const currentStep = PROCESS_STEPS[activeStepIndex];
-  const currentMeta = stageMeta[activeStepIndex];
-  const CurrentIcon = currentMeta.icon;
+  const handlePrev = () => {
+    setDirection(-1);
+    setCurrentStepIndex((prev) => (prev === 0 ? STEPS.length - 1 : prev - 1));
+  };
+
+  const handleJumpToStep = (index: number) => {
+    setDirection(index >= currentStepIndex ? 1 : -1);
+    setCurrentStepIndex(index);
+  };
+
+  // Robust 5-second interval timer per tab with zero race conditions
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const timer = setTimeout(() => {
+      setDirection(1);
+      setCurrentStepIndex((prev) => (prev + 1) % STEPS.length);
+    }, STEP_DURATION);
+
+    return () => clearTimeout(timer);
+  }, [isAutoPlaying, currentStepIndex]);
+
+  const currentStep = STEPS[currentStepIndex];
+
+  // Motion variants for silky-smooth slide and fade transition
+  const variants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? 30 : -30,
+      opacity: 0,
+      filter: 'blur(4px)'
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      filter: 'blur(0px)'
+    },
+    exit: (dir: number) => ({
+      x: dir > 0 ? -30 : 30,
+      opacity: 0,
+      filter: 'blur(4px)'
+    })
+  };
 
   return (
     <section 
       id="process" 
       className={`py-20 sm:py-24 md:py-28 relative border-b overflow-hidden transition-colors duration-300 ${
-        isDay ? 'bg-white text-slate-900 border-slate-200/80' : 'bg-[#071A36] text-white border-white/10'
+        isDay ? 'bg-[#F8FAFC] text-slate-900 border-slate-200/80' : 'bg-[#071A36] text-white border-white/10'
       }`}
     >
-      {/* Background Decorative Lighting */}
-      <div className={`absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] blur-3xl rounded-full pointer-events-none ${
-        isDay ? 'bg-blue-100/40' : 'bg-gradient-to-r from-[#0878FF]/10 to-[#00B8E6]/10'
+      {/* Background Decorative Ambient Lighting */}
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] blur-3xl rounded-full pointer-events-none opacity-40 ${
+        isDay ? 'bg-blue-200/50' : 'bg-gradient-to-r from-[#0878FF]/20 via-[#00B8E6]/15 to-[#0878FF]/20'
       }`} />
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-16">
-          <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider mb-3 font-mono ${
-            isDay ? 'bg-blue-50 border border-blue-200 text-[#0878FF]' : 'bg-blue-500/15 border border-blue-500/30 text-[#00B8E6]'
+        <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 font-mono ${
+            isDay ? 'bg-blue-100 border border-blue-200 text-[#0878FF]' : 'bg-[#0878FF]/15 border border-[#0878FF]/30 text-[#00B8E6]'
           }`}>
-            <Activity className="w-3.5 h-3.5" />
-            <span>SPRINT METHODOLOGY & EXECUTION</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>OUR PROCESS</span>
           </div>
 
           <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-['Space_Grotesk'] leading-tight mb-4 ${
             isDay ? 'text-slate-950' : 'text-white'
           }`}>
-            How We Work
+            HOW WE WORK
           </h2>
 
-          <p className={`text-base sm:text-lg leading-relaxed font-normal ${
-            isDay ? 'text-slate-600' : 'text-blue-100/85'
+          <p className={`text-base sm:text-lg font-normal ${
+            isDay ? 'text-slate-600' : 'text-blue-100/80'
           }`}>
-            A transparent, sprint-based delivery lifecycle engineered for velocity and precision. No bureaucratic bloat or black boxes—just continuous milestones, direct engineer access, and demonstrable weekly progress.
+            From idea to launch in 5 simple steps
           </p>
         </div>
 
-        {/* Interactive Milestone Stepper Bar */}
-        <div className="relative mb-8 sm:mb-12">
-          {/* Progress Connection Line Behind Icons */}
-          <div className={`hidden lg:block absolute top-7 left-[8%] right-[8%] h-0.5 z-0 ${
-            isDay ? 'bg-slate-200' : 'bg-white/10'
-          }`}>
-            <div 
-              className="h-full bg-gradient-to-r from-[#0878FF] to-[#00B8E6] transition-all duration-500 ease-out"
-              style={{ width: `${(activeStepIndex / (PROCESS_STEPS.length - 1)) * 100}%` }}
-            />
-          </div>
-
-          {/* Stepper Buttons */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 relative z-10">
-            {PROCESS_STEPS.map((step, idx) => {
-              const meta = stageMeta[idx];
-              const StepIcon = meta.icon;
-              const isActive = activeStepIndex === idx;
-              const isPast = activeStepIndex > idx;
-
-              return (
-                <button
-                  key={step.step}
-                  id={`process-tab-${step.step}`}
-                  onClick={() => setActiveStepIndex(idx)}
-                  className={`p-3.5 sm:p-4 rounded-2xl border text-left transition-all duration-300 relative group cursor-pointer flex flex-col justify-between ${
-                    isActive
-                      ? isDay
-                        ? 'bg-blue-50/80 border-[#0878FF] shadow-lg shadow-blue-500/15 ring-2 ring-[#0878FF]'
-                        : 'bg-[#0B2854] border-[#00B8E6] shadow-xl shadow-blue-500/20 ring-1 ring-[#00B8E6]/60'
-                      : isPast
-                      ? isDay
-                        ? 'bg-white hover:bg-slate-50 border-slate-300 text-slate-700'
-                        : 'bg-[#0B2854]/40 hover:bg-[#0B2854]/70 border-white/15 text-slate-300'
-                      : isDay
-                      ? 'bg-slate-50/80 hover:bg-white border-slate-200 text-slate-500'
-                      : 'bg-[#071A36]/80 hover:bg-[#0B2854]/50 border-white/10 text-slate-400'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center transition-all ${
-                      isActive 
-                        ? 'bg-[#0878FF] text-white shadow-md' 
-                        : isPast 
-                        ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-600'
-                        : isDay
-                        ? 'bg-slate-100 border border-slate-200 text-slate-500 group-hover:text-slate-900'
-                        : 'bg-white/5 border border-white/10 text-slate-400 group-hover:text-white'
-                    }`}>
-                      <StepIcon className="w-4 h-4" />
-                    </div>
-
-                    <span className={`text-xs font-mono font-bold ${
-                      isActive ? (isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]') : (isDay ? 'text-slate-400' : 'text-slate-400')
-                    }`}>
-                      0{idx + 1}
-                    </span>
-                  </div>
-
-                  <div>
-                    <div className={`text-[10px] font-mono uppercase tracking-wider mb-0.5 ${
-                      isDay ? 'text-slate-500' : 'text-blue-200/60'
-                    }`}>
-                      {step.duration}
-                    </div>
-                    <div className={`text-xs sm:text-sm font-bold font-['Space_Grotesk'] leading-snug ${
-                      isActive 
-                        ? isDay ? 'text-slate-950' : 'text-white' 
-                        : isDay ? 'text-slate-800' : 'text-slate-200 group-hover:text-white'
-                    }`}>
-                      {step.title}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+        {/* Step Navigation Tabs Bar (Strictly the 5 steps) */}
+        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 flex-wrap">
+          {STEPS.map((step, idx) => {
+            const isActive = currentStepIndex === idx;
+            const isCompleted = currentStepIndex > idx;
+            return (
+              <button
+                key={step.number}
+                onClick={() => handleJumpToStep(idx)}
+                className={`group flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-mono font-bold transition-all duration-300 cursor-pointer ${
+                  isActive
+                    ? isDay
+                      ? 'bg-white border-[#0878FF] text-[#0878FF] shadow-md shadow-blue-500/10 ring-2 ring-[#0878FF]/20'
+                      : 'bg-[#0B2854] border-[#00B8E6] text-[#00B8E6] shadow-lg shadow-blue-500/20 ring-1 ring-[#00B8E6]/50'
+                    : isCompleted
+                    ? isDay
+                      ? 'bg-slate-100/80 hover:bg-slate-200 border-slate-200 text-slate-700'
+                      : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-300'
+                    : isDay
+                    ? 'bg-slate-50 hover:bg-white border-slate-200 text-slate-400'
+                    : 'bg-[#071A36]/80 hover:bg-white/5 border-white/5 text-slate-500'
+                }`}
+                title={`Step ${step.number}: ${step.stepName}`}
+              >
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] transition-colors ${
+                  isActive
+                    ? 'bg-[#0878FF] text-white'
+                    : isCompleted
+                    ? isDay ? 'bg-blue-100 text-[#0878FF]' : 'bg-[#0878FF]/30 text-[#00B8E6]'
+                    : isDay ? 'bg-slate-200 text-slate-500' : 'bg-white/10 text-slate-400'
+                }`}>
+                  {step.number}
+                </span>
+                <span className="tracking-wider">{step.stepName}</span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Stage Deep-Dive Showcase */}
-        <div className={`rounded-3xl border p-6 sm:p-8 lg:p-10 backdrop-blur-xs relative overflow-hidden shadow-2xl transition-colors ${
+        {/* Dynamic Animated Content Container with 4-Sided Perimeter Progress Line */}
+        <div className={`relative min-h-[340px] sm:min-h-[360px] rounded-3xl p-6 sm:p-10 lg:p-12 shadow-2xl backdrop-blur-md transition-colors ${
           isDay 
-            ? 'bg-slate-50 border-slate-200/90 text-slate-900' 
-            : 'bg-[#0B2854]/50 border-white/15 text-white'
+            ? 'bg-white text-slate-900 shadow-slate-200/60' 
+            : 'bg-[#0B2854]/40 text-white shadow-blue-950/40'
         }`}>
-          <div className={`absolute top-0 right-0 w-96 h-96 rounded-full blur-3xl pointer-events-none ${
-            isDay ? 'bg-blue-100/50' : 'bg-[#0878FF]/10'
+          
+          {/* 4-Sided Animated Perimeter Progress Border */}
+          <svg 
+            className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl overflow-visible"
+          >
+            <defs>
+              <linearGradient id="perimeterProgressGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#0878FF" />
+                <stop offset="50%" stopColor="#00B8E6" />
+                <stop offset="100%" stopColor="#0878FF" />
+              </linearGradient>
+              <filter id="borderGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* Static background border track on all 4 sides */}
+            <rect
+              x="1.5"
+              y="1.5"
+              width="calc(100% - 3px)"
+              height="calc(100% - 3px)"
+              rx="24"
+              fill="none"
+              stroke={isDay ? "rgba(15, 23, 42, 0.08)" : "rgba(255, 255, 255, 0.12)"}
+              strokeWidth="2"
+            />
+
+            {/* Glowing 4-Sided Perimeter Progress Line Animation (Full 9s Loop) */}
+            {isAutoPlaying && (
+              <motion.rect
+                key={`perimeter-${currentStepIndex}`}
+                x="1.5"
+                y="1.5"
+                width="calc(100% - 3px)"
+                height="calc(100% - 3px)"
+                rx="24"
+                fill="none"
+                stroke="url(#perimeterProgressGrad)"
+                strokeWidth="2.5"
+                filter="url(#borderGlow)"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 9, ease: 'linear' }}
+              />
+            )}
+          </svg>
+
+          {/* Subtle Ambient Radial Glow inside Card */}
+          <div className={`absolute top-0 right-0 w-80 h-80 rounded-full blur-3xl pointer-events-none ${
+            isDay ? 'bg-blue-100/60' : 'bg-[#0878FF]/10'
           }`} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
-            
-            {/* Left Col: Detailed Narrative & Outputs */}
-            <div className="lg:col-span-7 space-y-6">
-              
-              {/* Header Badges */}
-              <div className="flex flex-wrap items-center gap-3">
-                <span className={`px-3 py-1 rounded-md text-xs font-mono font-bold ${
-                  isDay ? 'bg-blue-100 border border-blue-200 text-[#0878FF]' : 'bg-[#0878FF]/20 border border-[#0878FF]/40 text-[#00B8E6]'
-                }`}>
-                  {currentMeta.phaseTag}
-                </span>
-                <span className={`px-3 py-1 rounded-md text-xs font-mono border ${
-                  isDay ? 'bg-white border-slate-200 text-slate-600' : 'bg-white/5 border-white/10 text-slate-300'
-                }`}>
-                  TIMELINE: {currentStep.duration}
-                </span>
-              </div>
-
-              {/* Title & Narrative */}
-              <div>
-                <h3 className={`text-2xl sm:text-3xl font-extrabold font-['Space_Grotesk'] tracking-tight mb-3 ${
-                  isDay ? 'text-slate-950' : 'text-white'
-                }`}>
-                  {currentStep.title}
-                </h3>
-                <p className={`text-sm sm:text-base leading-relaxed font-normal ${
-                  isDay ? 'text-slate-600' : 'text-blue-100/85'
-                }`}>
-                  {currentStep.description}
-                </p>
-              </div>
-
-              {/* Key Deliverables Matrix */}
-              <div className="pt-2">
-                <div className={`text-xs font-bold uppercase tracking-wider font-mono mb-3 flex items-center gap-2 ${
-                  isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'
-                }`}>
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Key Phase Deliverables & Milestones:</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {currentStep.keyOutputs.map((output, idx) => (
-                    <div 
-                      key={idx} 
-                      className={`flex items-start gap-2.5 p-3 rounded-xl border text-xs font-medium ${
-                        isDay 
-                          ? 'bg-white border-slate-200 text-slate-800 shadow-2xs' 
-                          : 'bg-[#071A36]/60 border-white/10 text-slate-200'
-                      }`}
-                    >
-                      <Check className={`w-4 h-4 shrink-0 mt-0.5 ${
-                        isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'
-                      }`} />
-                      <span className="leading-snug">{output}</span>
+          <div className="relative min-h-[220px] flex items-center">
+            <AnimatePresence mode="wait" custom={direction}>
+              <motion.div
+                key={`step-${currentStep.number}`}
+                custom={direction}
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: 'spring', stiffness: 300, damping: 30 },
+                  opacity: { duration: 0.35 },
+                  filter: { duration: 0.35 }
+                }}
+                className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10"
+              >
+                {/* Left Column: Icon & Heading */}
+                <div className="lg:col-span-5 flex flex-col items-start space-y-4">
+                  
+                  {/* Icon & Heading Block */}
+                  <div className="flex items-center gap-4">
+                    <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center shrink-0 shadow-lg transition-transform duration-300 ${
+                      isDay
+                        ? 'bg-gradient-to-br from-blue-500 to-[#0878FF] text-white shadow-blue-500/25'
+                        : 'bg-gradient-to-br from-[#0878FF] to-[#00B8E6] text-white shadow-blue-500/30'
+                    }`}>
+                      {React.createElement(currentStep.icon, { className: 'w-7 h-7 sm:w-8 sm:h-8' })}
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Action Button & Next Stage Trigger */}
-              <div className="flex flex-wrap items-center gap-4 pt-2">
-                <button
-                  onClick={() => onOpenContact(`Inquiry: ${currentStep.title}`)}
-                  id="process-initiate-stage-btn"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-wider bg-[#0878FF] hover:bg-[#00B8E6] hover:text-[#071A36] text-white shadow-lg shadow-blue-500/25 transition-all duration-200 group cursor-pointer"
-                >
-                  <span>Start Phase 0{activeStepIndex + 1}</span>
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-
-                {activeStepIndex < PROCESS_STEPS.length - 1 ? (
-                  <button
-                    onClick={() => setActiveStepIndex(prev => prev + 1)}
-                    className={`text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                      isDay ? 'text-slate-600 hover:text-slate-900' : 'text-blue-200/80 hover:text-white'
-                    }`}
-                  >
-                    <span>Next: {PROCESS_STEPS[activeStepIndex + 1].title}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setActiveStepIndex(0)}
-                    className={`text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer ${
-                      isDay ? 'text-slate-600 hover:text-slate-900' : 'text-blue-200/80 hover:text-white'
-                    }`}
-                  >
-                    <span>Review Full Lifecycle From Start</span>
-                  </button>
-                )}
-              </div>
-
-            </div>
-
-            {/* Right Col: Stage Operational Card & Tooling */}
-            <div className={`rounded-2xl p-6 sm:p-7 space-y-6 shadow-xl border ${
-              isDay ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#071A36]/90 border-white/15 text-white'
-            }`}>
-              
-              {/* Highlight Metric */}
-              <div className={`p-4 rounded-xl border ${
-                isDay ? 'bg-slate-50 border-slate-200' : 'bg-gradient-to-br from-white/5 to-white/0 border-white/10'
-              }`}>
-                <div className="flex items-center gap-3 mb-2">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                    isDay ? 'bg-blue-100 text-[#0878FF]' : 'bg-[#00B8E6]/15 text-[#00B8E6]'
-                  }`}>
-                    <CurrentIcon className="w-4 h-4" />
+                    <div>
+                      <h3 className={`text-3xl sm:text-4xl lg:text-5xl font-extrabold font-['Space_Grotesk'] tracking-tight ${
+                        isDay ? 'text-slate-950' : 'text-white'
+                      }`}>
+                        {currentStep.stepName}
+                      </h3>
+                    </div>
                   </div>
-                  <span className={`text-xs font-mono font-bold uppercase tracking-wider ${
-                    isDay ? 'text-slate-500' : 'text-blue-200/70'
+
+                  {/* Brief Subtitle/Tagline */}
+                  <p className={`text-sm leading-relaxed ${
+                    isDay ? 'text-slate-600' : 'text-blue-100/70'
                   }`}>
-                    STAGE STANDARD
-                  </span>
-                </div>
-                <div className={`text-xl sm:text-2xl font-extrabold font-['Space_Grotesk'] ${
-                  isDay ? 'text-slate-900' : 'text-white'
-                }`}>
-                  {currentMeta.highlightMetric}
-                </div>
-                <p className={`text-xs mt-0.5 ${
-                  isDay ? 'text-slate-500' : 'text-blue-100/75'
-                }`}>
-                  {currentMeta.metricSub}
-                </p>
-              </div>
+                    {currentStep.tagline}
+                  </p>
 
-              {/* Tooling & Platforms */}
-              <div>
-                <div className={`text-[11px] font-mono font-bold uppercase tracking-wider mb-2.5 flex items-center gap-1.5 ${
-                  isDay ? 'text-slate-500' : 'text-blue-200/70'
-                }`}>
-                  <Terminal className={`w-3 h-3 ${isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'}`} />
-                  <span>Platforms & Collaboration Stack</span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {currentMeta.tools.map((tool, idx) => (
-                    <span 
-                      key={idx}
-                      className={`px-2.5 py-1 rounded-md text-xs font-mono border ${
-                        isDay 
-                          ? 'bg-slate-100 border-slate-200 text-slate-700' 
-                          : 'bg-white/5 border-white/10 text-slate-200'
-                      }`}
-                    >
-                      {tool}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                  {/* Deliverables Checklist */}
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {currentStep.deliverables.map((item, idx) => (
+                      <span 
+                        key={idx}
+                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium border ${
+                          isDay 
+                            ? 'bg-slate-100 border-slate-200 text-slate-700' 
+                            : 'bg-white/5 border-white/10 text-slate-300'
+                        }`}
+                      >
+                        <CheckCircle2 className="w-3 h-3 text-[#0878FF]" />
+                        <span>{item}</span>
+                      </span>
+                    ))}
+                  </div>
 
-              {/* Real-time Collaboration Guarantee */}
-              <div className={`pt-4 border-t space-y-2.5 text-xs ${
-                isDay ? 'border-slate-100 text-slate-600' : 'border-white/10 text-slate-300'
-              }`}>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <span>Dedicated Shared Slack / Discord Channel</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <GitBranch className={`w-4 h-4 shrink-0 ${isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'}`} />
-                  <span>Full Git Repository & Figma File Ownership</span>
+
+                {/* Right Column: Clean Description Statement */}
+                <div className="lg:col-span-7 flex flex-col justify-center">
+                  <div className={`p-6 sm:p-8 lg:p-10 rounded-2xl border relative overflow-hidden transition-all ${
+                    isDay 
+                      ? 'bg-gradient-to-br from-blue-50/60 to-white border-blue-100 text-slate-900 shadow-sm' 
+                      : 'bg-gradient-to-br from-[#071A36] to-[#0B2854]/90 border-white/15 text-white shadow-xl'
+                  }`}>
+                    
+                    {/* The Clean Description Text */}
+                    <div className={`text-2xl sm:text-3xl md:text-4xl font-bold leading-tight font-['Space_Grotesk'] tracking-tight mb-4 ${
+                      isDay ? 'text-slate-900' : 'text-white'
+                    }`}>
+                      {currentStep.description}
+                    </div>
+
+                    <p className={`text-sm leading-relaxed ${
+                      isDay ? 'text-slate-500' : 'text-blue-100/70'
+                    }`}>
+                      Collaborative, strategic, and transparent execution at every phase of your project.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Zap className={`w-4 h-4 shrink-0 ${isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'}`} />
-                  <span>Async Video Walkthroughs with Every Milestone</span>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-
-        {/* Bottom Agency Transparency Standards Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-          <div className={`p-4 rounded-xl border flex items-center gap-3.5 transition-colors ${
-            isDay ? 'bg-white border-slate-200 shadow-xs' : 'bg-white/5 border-white/10'
-          }`}>
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              isDay ? 'bg-blue-50 text-[#0878FF]' : 'bg-blue-500/20 text-[#00B8E6]'
-            }`}>
-              <ShieldCheck className="w-4 h-4" />
-            </div>
-            <div>
-              <div className={`text-xs font-bold font-['Space_Grotesk'] ${isDay ? 'text-slate-900' : 'text-white'}`}>Zero Lock-In Guarantee</div>
-              <div className={`text-[11px] ${isDay ? 'text-slate-500' : 'text-blue-100/70'}`}>Complete IP and asset transfer upon signoff.</div>
-            </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-          <div className={`p-4 rounded-xl border flex items-center gap-3.5 transition-colors ${
-            isDay ? 'bg-white border-slate-200 shadow-xs' : 'bg-white/5 border-white/10'
-          }`}>
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              isDay ? 'bg-cyan-50 text-[#0284C7]' : 'bg-cyan-500/20 text-[#00B8E6]'
-            }`}>
-              <MessageSquareCode className="w-4 h-4" />
-            </div>
-            <div>
-              <div className={`text-xs font-bold font-['Space_Grotesk'] ${isDay ? 'text-slate-900' : 'text-white'}`}>Direct Engineer Access</div>
-              <div className={`text-[11px] ${isDay ? 'text-slate-500' : 'text-blue-100/70'}`}>Speak directly with builders, not account managers.</div>
+          {/* Bottom Interactive Controls Bar (Clean symmetrical arrow buttons) */}
+          <div className="flex items-center justify-end pt-6 mt-6 border-t border-white/10 relative z-10">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setIsAutoPlaying(prev => !prev)}
+                className={`p-2.5 rounded-xl border text-xs transition-colors cursor-pointer ${
+                  isAutoPlaying
+                    ? isDay ? 'bg-blue-50 border-blue-200 text-[#0878FF]' : 'bg-[#0878FF]/20 border-[#0878FF]/40 text-[#00B8E6]'
+                    : isDay ? 'bg-slate-100 border-slate-200 text-slate-600' : 'bg-white/5 border-white/10 text-slate-400'
+                }`}
+                title={isAutoPlaying ? 'Pause Auto-Play (9s)' : 'Resume Auto-Play (9s)'}
+              >
+                {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              </button>
+
+              <button
+                onClick={handlePrev}
+                className={`p-2.5 rounded-xl border transition-colors cursor-pointer ${
+                  isDay
+                    ? 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 shadow-2xs'
+                    : 'bg-white/5 hover:bg-white/10 border-white/15 text-slate-200'
+                }`}
+                title="Previous Step"
+              >
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={handleNext}
+                className={`p-2.5 rounded-xl border transition-colors cursor-pointer ${
+                  isDay
+                    ? 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700 shadow-2xs'
+                    : 'bg-white/5 hover:bg-white/10 border-white/15 text-slate-200'
+                }`}
+                title="Next Step"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
-          <div className={`p-4 rounded-xl border flex items-center gap-3.5 transition-colors ${
-            isDay ? 'bg-white border-slate-200 shadow-xs' : 'bg-white/5 border-white/10'
-          }`}>
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              isDay ? 'bg-indigo-50 text-indigo-600' : 'bg-indigo-500/20 text-indigo-400'
-            }`}>
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <div className={`text-xs font-bold font-['Space_Grotesk'] ${isDay ? 'text-slate-900' : 'text-white'}`}>Fixed Scope or Retainer</div>
-              <div className={`text-[11px] ${isDay ? 'text-slate-500' : 'text-blue-100/70'}`}>Transparent pricing with no surprise invoices.</div>
-            </div>
-          </div>
         </div>
 
       </div>
