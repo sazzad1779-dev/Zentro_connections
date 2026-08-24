@@ -15,13 +15,11 @@ interface FaqSectionProps {
 
 export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
   const { isDay } = useTheme();
-  const [openIds, setOpenIds] = useState<string[]>(['faq-1']);
+  const [openId, setOpenId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   const toggleFaq = (id: string) => {
-    setOpenIds(prev => 
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+    setOpenId(prev => (prev === id ? null : id));
   };
 
   const filteredFaqs = FAQ_DATA.filter(faq => 
@@ -42,7 +40,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
       }`} />
       <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
@@ -64,7 +62,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
           </p>
 
           {/* Quick Search Input */}
-          <div className="mt-8 relative max-w-md mx-auto">
+          <div className="mt-8 relative max-w-lg mx-auto">
             <Search className={`w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 ${
               isDay ? 'text-slate-400' : 'text-blue-200/60'
             }`} />
@@ -85,7 +83,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ onOpenContact }) => {
         {/* Accordion List */}
         <div className="space-y-4">
           {filteredFaqs.map((faq) => {
-            const isOpen = openIds.includes(faq.id);
+            const isOpen = openId === faq.id;
             return (
               <div
                 key={faq.id}
