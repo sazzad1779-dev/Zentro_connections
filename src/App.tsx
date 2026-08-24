@@ -6,7 +6,6 @@
 import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
-import { SocialProof } from './components/SocialProof';
 import { AboutSection } from './components/AboutSection';
 import { ServicesSection } from './components/ServicesSection';
 import { PortfolioSection } from './components/PortfolioSection';
@@ -81,10 +80,7 @@ export default function App() {
           onSelectService={handleSelectServiceByName}
         />
 
-        {/* 2. Trust & Social Proof Bar */}
-        <SocialProof />
-
-        {/* 3. Editorial About Section */}
+        {/* 2. Editorial About Section */}
         <AboutSection
           onOpenContact={() => handleOpenContact('General Agency Inquiry')}
         />

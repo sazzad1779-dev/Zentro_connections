@@ -1,10 +1,128 @@
 import React from 'react';
-import { ArrowRight, Sparkles, Phone, Mail, MapPin, ShieldCheck, Clock } from 'lucide-react';
+import { motion } from 'motion/react';
+import { ArrowRight, Sparkles, Phone, Mail, MapPin, ShieldCheck, Clock, Building2 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 
 interface CtaSectionProps {
   onOpenContact: () => void;
 }
+
+interface CompanyBox {
+  name: string;
+  category: string;
+  tag: string;
+  location: string;
+  renderIcon: (color: string) => React.ReactNode;
+}
+
+const PARTNER_COMPANIES: CompanyBox[] = [
+  {
+    name: 'APEX CLOUD',
+    category: 'Enterprise Cloud Infra',
+    tag: 'Series B • $45M',
+    location: 'San Francisco',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <path d="M12 3L20 18H4L12 3Z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M12 9L16 18H8L12 9Z" fill={color} fillOpacity="0.25" />
+        <circle cx="12" cy="14" r="1.5" fill={color} />
+      </svg>
+    )
+  },
+  {
+    name: 'VANGUARD LABS',
+    category: 'FinTech Protocol & Pay',
+    tag: 'Enterprise Tier',
+    location: 'London / NYC',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L4 7V13C4 18 7.5 21.5 12 22C16.5 21.5 20 18 20 13V7L12 2Z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M9 11L12 14L15 8" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  },
+  {
+    name: 'HYPERION BIO',
+    category: 'Precision Genomics AI',
+    tag: 'NASDAQ Listed',
+    location: 'Boston / Basel',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="3" stroke={color} strokeWidth="2" />
+        <circle cx="12" cy="4" r="2" fill={color} />
+        <circle cx="12" cy="20" r="2" fill={color} />
+        <circle cx="4" cy="12" r="2" fill={color} />
+        <circle cx="20" cy="12" r="2" fill={color} />
+        <line x1="12" y1="6" x2="12" y2="9" stroke={color} strokeWidth="1.5" />
+        <line x1="12" y1="15" x2="12" y2="18" stroke={color} strokeWidth="1.5" />
+        <line x1="6" y1="12" x2="9" y2="12" stroke={color} strokeWidth="1.5" />
+        <line x1="15" y1="12" x2="18" y2="12" stroke={color} strokeWidth="1.5" />
+      </svg>
+    )
+  },
+  {
+    name: 'STRATA SYSTEMS',
+    category: 'Asset Intelligence Core',
+    tag: '$1.4B AUM',
+    location: 'Singapore / Zurich',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L21 7V17L12 22L3 17V7L12 2Z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M12 22V12M21 7L12 12M3 7L12 12" stroke={color} strokeWidth="1.5" />
+      </svg>
+    )
+  },
+  {
+    name: 'AETHER SPATIAL',
+    category: '3D Audio & Haptics',
+    tag: 'Design Award 2025',
+    location: 'Berlin / Tokyo',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="1.5" strokeDasharray="3 3" />
+        <circle cx="12" cy="12" r="5" stroke={color} strokeWidth="2" />
+        <circle cx="12" cy="12" r="2" fill={color} />
+      </svg>
+    )
+  },
+  {
+    name: 'ZENITH GLOBAL',
+    category: 'Autonomous Fleet Grid',
+    tag: 'Series C • $110M',
+    location: 'Austin / Munich',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <path d="M4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12" stroke={color} strokeWidth="2" strokeLinecap="round" />
+        <path d="M20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12" stroke={color} strokeWidth="2" strokeLinecap="round" strokeDasharray="2 2" />
+        <polygon points="12,7 15,14 9,14" fill={color} />
+      </svg>
+    )
+  },
+  {
+    name: 'CHRONOS AI',
+    category: 'Autonomous Agent Engine',
+    tag: 'YC S24 Alum',
+    location: 'San Francisco',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke={color} strokeWidth="2" />
+        <polyline points="12 6 12 12 16 14" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="12" cy="3" r="1.5" fill={color} />
+      </svg>
+    )
+  },
+  {
+    name: 'QUANTUM PULSE',
+    category: 'Ultra-Low Latency Ops',
+    tag: '99.999% SLA',
+    location: 'Chicago / London',
+    renderIcon: (color: string) => (
+      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none">
+        <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke={color} strokeWidth="2" strokeLinejoin="round" />
+      </svg>
+    )
+  }
+];
 
 export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact }) => {
   const { isDay } = useTheme();
@@ -161,8 +279,117 @@ export const CtaSection: React.FC<CtaSectionProps> = ({ onOpenContact }) => {
 
           </div>
 
+          {/* Animated Right-to-Left Continuous Scrolling Company Boxes */}
+          <div className={`mt-14 pt-10 border-t relative overflow-hidden ${
+            isDay ? 'border-slate-200' : 'border-white/10'
+          }`}>
+            {/* Header with Badges & Title */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+              <div>
+                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-widest uppercase mb-2.5 border ${
+                  isDay 
+                    ? 'bg-blue-50 border-blue-200 text-[#0878FF]' 
+                    : 'bg-white/5 border-white/15 text-[#00B8E6]'
+                }`}>
+                  <Building2 className="w-3.5 h-3.5" />
+                  <span>TRUSTED BY HIGH-GROWTH STARTUPS & ENTERPRISES WORLDWIDE</span>
+                </div>
+                <h3 className={`text-xl sm:text-2xl font-bold font-['Space_Grotesk'] tracking-tight ${
+                  isDay ? 'text-slate-900' : 'text-white'
+                }`}>
+                  Powering Market-Leading Brands <span className={isDay ? 'text-[#0878FF]' : 'text-[#00B8E6]'}>Across 16 Countries</span>
+                </h3>
+              </div>
+
+              <div className={`hidden sm:flex items-center gap-2 text-[11px] font-mono ${
+                isDay ? 'text-slate-500' : 'text-blue-200/60'
+              }`}>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Continuous Sprint Pipeline • 99.9% Uptime</span>
+              </div>
+            </div>
+
+            {/* Carousel track with left & right gradient fade masks */}
+            <div className="relative w-full overflow-hidden py-2">
+              
+              {/* Left Screen Edge Fade Gradient (Disappearing into left screen) */}
+              <div className={`absolute top-0 bottom-0 left-0 w-16 sm:w-28 z-10 pointer-events-none ${
+                isDay
+                  ? 'bg-gradient-to-r from-white via-white/80 to-transparent'
+                  : 'bg-gradient-to-r from-[#0B2854] via-[#0B2854]/80 to-transparent'
+              }`} />
+
+              {/* Right Screen Edge Fade Gradient (Entering from right screen) */}
+              <div className={`absolute top-0 bottom-0 right-0 w-16 sm:w-28 z-10 pointer-events-none ${
+                isDay
+                  ? 'bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent'
+                  : 'bg-gradient-to-l from-[#071A36] via-[#071A36]/80 to-transparent'
+              }`} />
+
+              {/* Infinite Continuous Motion Marquee Track (Right to Left) */}
+              <motion.div
+                className="flex items-center gap-4 w-max"
+                animate={{ x: ['0%', '-50%'] }}
+                transition={{
+                  ease: 'linear',
+                  duration: 26,
+                  repeat: Infinity,
+                }}
+              >
+                {/* Render duplicate sets of company boxes for seamless infinite scrolling loop */}
+                {[...PARTNER_COMPANIES, ...PARTNER_COMPANIES].map((company, index) => {
+                  const iconColor = isDay ? '#0878FF' : '#00B8E6';
+                  return (
+                    <div
+                      key={`company-box-${index}`}
+                      className={`flex items-center gap-3.5 px-4 py-3 rounded-2xl border shrink-0 transition-all duration-300 group cursor-pointer ${
+                        isDay
+                          ? 'bg-white/90 hover:bg-white border-slate-200 shadow-2xs hover:border-[#0878FF]/50 hover:shadow-md hover:shadow-blue-500/10'
+                          : 'bg-[#071A36]/90 hover:bg-[#071A36] border-white/10 hover:border-[#00B8E6]/50 shadow-md hover:shadow-lg hover:shadow-cyan-500/10'
+                      }`}
+                    >
+                      {/* Company Vector Logo Icon */}
+                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
+                        isDay
+                          ? 'bg-blue-50/90 group-hover:bg-blue-100/80'
+                          : 'bg-white/5 group-hover:bg-white/10'
+                      }`}>
+                        {company.renderIcon(iconColor)}
+                      </div>
+
+                      {/* Info block */}
+                      <div className="flex flex-col text-left">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-bold font-['Space_Grotesk'] tracking-wide uppercase leading-tight ${
+                            isDay ? 'text-slate-900 group-hover:text-[#0878FF]' : 'text-white group-hover:text-[#00B8E6]'
+                          }`}>
+                            {company.name}
+                          </span>
+                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded-full border ${
+                            isDay
+                              ? 'bg-blue-50 text-[#0878FF] border-blue-200/80'
+                              : 'bg-[#0878FF]/15 text-[#00B8E6] border-[#0878FF]/30'
+                          }`}>
+                            {company.tag}
+                          </span>
+                        </div>
+                        <span className={`text-[11px] leading-tight mt-0.5 ${
+                          isDay ? 'text-slate-500' : 'text-blue-100/70'
+                        }`}>
+                          {company.category} • <span className="font-mono">{company.location}</span>
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </motion.div>
+
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
   );
 };
+
